@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #f0f0f0;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
+            background-color: #87CEEB;
+        }
+
+        .instructions {
+            text-align: center;
+            font-family: Arial, sans-serif;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="instructions">
+    <p>Use arrow keys to move the character!</p>
+</div>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const character = {
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        size: 50,
+        color: 'red',
+        speed: 5
+    };
+
+    const keys = {
+        ArrowUp: false,
+        ArrowDown: false,
+        ArrowLeft: false,
+        ArrowRight: false
+    };
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key in keys) keys[e.key] = true;
+    });
+
+    document.addEventListener('keyup', (e) => {
+        if (e.key in keys) keys[e.key] = false;
+    });
+
+    function update() {
+        // Clear the canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (keys.ArrowUp) character.y -= character.speed;
+        if (keys.ArrowDown) character.y += character.speed;
+        if (keys.ArrowLeft) character.x -= character.speed;
+        if (keys.ArrowRight) character.x += character.speed;
+
+        if (character.x < 0) character.x = 0;
+        if (character.x + character.size > canvas.width) character.x = canvas.width - character.size;
+        if (character.y < 0) character.y = 0;
+        if (character.y + character.size > canvas.height) character.y = canvas.height - character.size;
+
+        ctx.fillStyle = character.color;
+        ctx.fillRect(character.x, character.y, character.size, character.size);
+
+        requestAnimationFrame(update);
+    }
+
+    update();
+</script>
+</body>
+</html>
