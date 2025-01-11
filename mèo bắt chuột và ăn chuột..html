@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mèo bắt chuột và ăn chuột.</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .log {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1>Mèo bắt chuột</h1>
+<div class="log" id="log"></div>
+<button id="startButton">Bắt đầu mô phỏng</button>
+
+<script>
+  class Rat {
+    constructor(name, weight, speed) {
+      this.name = name;
+      this.weight = weight;
+      this.speed = speed;
+      this.isAlive = true;
+    }
+
+    squeak() {
+      return "Chít chít!";
+    }
+  }
+
+  class Cat {
+    constructor(name, weight, maxSpeed) {
+      this.name = name;
+      this.weight = weight;
+      this.maxSpeed = maxSpeed;
+    }
+
+    meow() {
+      return "Meo meo!";
+    }
+
+    catchRat(rat) {
+      if (rat.speed < this.maxSpeed && rat.isAlive) {
+        log(`Mèo ${this.name} đã bắt được chuột ${rat.name}!`);
+        return true;
+      } else {
+        log(`Mèo ${this.name} không thể bắt được chuột ${rat.name}.`);
+        return false;
+      }
+    }
+
+    eatRat(rat) {
+      if (rat.isAlive) {
+        log(`Mèo ${this.name} ăn chuột ${rat.name}.`);
+        this.weight += rat.weight;
+        rat.isAlive = false;
+      } else {
+        log(`Chuột ${rat.name} đã chết hoặc không thể ăn!`);
+      }
+    }
+  }
+
+  function log(message) {
+    const logDiv = document.getElementById("log");
+    logDiv.innerHTML += `<p>${message}</p>`;
+  }
+
+
+  document.getElementById("startButton").addEventListener("click", () => {
+    const logDiv = document.getElementById("log");
+    logDiv.innerHTML = "";
+
+    const rat1 = new Rat("Jerry", 0.5, 10);
+    const rat2 = new Rat("Mickey", 0.7, 8);
+
+    const cat = new Cat("Tom", 5, 12);
+
+    log(`${cat.name}: ${cat.meow()}`);
+
+    log(`${rat1.name}: ${rat1.squeak()}`);
+    log(`${rat2.name}: ${rat2.squeak()}`);
+
+    if (cat.catchRat(rat1)) {
+      cat.eatRat(rat1);
+    }
+
+    if (cat.catchRat(rat2)) {
+      cat.eatRat(rat2);
+    }
+
+    log(`Kết thúc: Mèo ${cat.name} nặng ${cat.weight}kg.`);
+  });
+</script>
+</body>
+</html>
