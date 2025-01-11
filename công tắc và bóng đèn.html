@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>công tắc và bóng đèn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .status {
+            font-size: 1.5em;
+            margin: 20px 0;
+        }
+        .log {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<h1>Công tắc và bóng đèn</h1>
+<div class="status" id="status">Trạng thái bóng đèn: Tắt</div>
+<button id="toggleButton">Bật/Tắt Công tắc</button>
+<div class="log" id="log"></div>
+
+<script>
+    class Bulb {
+        constructor() {
+            this.isOn = false;
+        }
+
+        turnOn() {
+            this.isOn = true;
+        }
+
+        turnOff() {
+            this.isOn = false;
+        }
+
+        getStatus() {
+            return this.isOn ? "Sáng" : "Tắt";
+        }
+    }
+
+    class Switch {
+        constructor() {
+            this.isOn = false;
+            this.connectedBulb = null;
+        }
+
+        connect(bulb) {
+            this.connectedBulb = bulb;
+        }
+
+        toggle() {
+            if (this.connectedBulb) {
+                this.isOn = !this.isOn;
+                if (this.isOn) {
+                    this.connectedBulb.turnOn();
+                } else {
+                    this.connectedBulb.turnOff();
+                }
+            }
+        }
+    }
+
+    const myBulb = new Bulb();
+    const mySwitch = new Switch();
+
+    mySwitch.connect(myBulb);
+
+    const statusDiv = document.getElementById("status");
+    const logDiv = document.getElementById("log");
+    const toggleButton = document.getElementById("toggleButton");
+
+    function updateUI() {
+        const bulbStatus = myBulb.getStatus();
+        statusDiv.textContent = `Trạng thái bóng đèn: ${bulbStatus}`;
+        logDiv.innerHTML += `<p>Bóng đèn hiện tại: ${bulbStatus}</p>`;
+    }
+
+    toggleButton.addEventListener("click", () => {
+        mySwitch.toggle();
+        updateUI();
+    });
+
+    let count = 0;
+    const interval = setInterval(() => {
+        if (count >= 10) {
+            clearInterval(interval);
+            return;
+        }
+        mySwitch.toggle();
+        updateUI();
+        count++;
+    }, 1000);
+</script>
+</body>
+</html>
