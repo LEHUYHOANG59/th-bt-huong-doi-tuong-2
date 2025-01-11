@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Điều khiển Tivi</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .log {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      max-width: 600px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1>Điều khiển Tivi bằng Remote</h1>
+<div class="log" id="log"></div>
+<button id="startButton">Bắt đầu mô phỏng</button>
+
+<script>
+  class Remote {
+    constructor(code) {
+      this.code = code;
+    }
+
+    changeChannel(tv, channel) {
+      tv.setChannel(channel);
+    }
+
+    adjustVolume(tv, volumeChange) {
+      tv.setVolume(tv.volume + volumeChange);
+    }
+
+    turnOff(tv) {
+      tv.turnOff();
+    }
+  }
+
+  class TiVi {
+    constructor() {
+      this.channel = 1;
+      this.volume = 10;
+      this.isOn = false;
+    }
+
+    turnOn() {
+      this.isOn = true;
+      log("Tivi đã bật.");
+    }
+
+    turnOff() {
+      this.isOn = false;
+      log("Tivi đã tắt.");
+    }
+
+    setChannel(channel) {
+      if (this.isOn) {
+        this.channel = channel;
+        log(`Tivi chuyển đến kênh ${this.channel}.`);
+      } else {
+        log("Tivi chưa bật, không thể chuyển kênh.");
+      }
+    }
+
+    setVolume(volume) {
+      if (this.isOn) {
+        this.volume = volume;
+        log(`Âm lượng tivi là ${this.volume}.`);
+      } else {
+        log("Tivi chưa bật, không thể điều chỉnh âm lượng.");
+      }
+    }
+  }
+
+  function log(message) {
+    const logDiv = document.getElementById("log");
+    logDiv.innerHTML += `<p>${message}</p>`;
+  }
+
+  document.getElementById("startButton").addEventListener("click", () => {
+    const logDiv = document.getElementById("log");
+    logDiv.innerHTML = "";
+
+    const tv = new TiVi();
+    const remote = new Remote("ABC123");
+
+    tv.turnOn();
+
+    tv.setChannel(7);
+
+    remote.changeChannel(tv, 3);
+
+    remote.adjustVolume(tv, 2);
+
+    remote.turnOff(tv);
+  });
+</script>
+</body>
+</html>
