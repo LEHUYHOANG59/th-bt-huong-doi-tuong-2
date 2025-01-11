@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Trò chơi cờ Ca-ro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    .board {
+      display: grid;
+      grid-template-columns: repeat(20, 30px);
+      gap: 2px;
+      margin: 0 auto;
+      margin-top: 20px;
+    }
+    .cell {
+      width: 30px;
+      height: 30px;
+      background-color: #f0f0f0;
+      border: 1px solid #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .cell.taken {
+      cursor: not-allowed;
+    }
+    .status {
+      font-size: 1.5em;
+      margin-top: 20px;
+    }
+    .winner {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<h1>Trò chơi cờ Ca-ro</h1>
+<div class="status" id="status">Lượt chơi: X</div>
+<div class="board" id="board"></div>
+
+<script>
+  const boardSize = 20; // Kích thước bàn cờ
+  const board = [];
+  let currentPlayer = 'X'; // Người chơi hiện tại
+  let gameOver = false;
+
+  function createBoard() {
+    const boardElement = document.getElementById("board");
+    for (let row = 0; row < boardSize; row++) {
+      board[row] = [];
+      for (let col = 0; col < boardSize; col++) {
+        board[row][col] = '';
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.row = row;
+        cell.dataset.col = col;
+        cell.addEventListener("click", handleCellClick);
+        boardElement.appendChild(cell);
+      }
+    }
+  }
+
+  function handleCellClick(event) {
+    if (gameOver) return;
+
+    const cell = event.target;
+    const row = parseInt(cell.dataset.row);
+    const col = parseInt(cell.dataset.col);
+
+    if (board[row][col] !== '') return;
+
+    board[row][col] = currentPlayer;
+    cell.textContent = currentPlayer;
+    cell.classList.add("taken");
+
+    if (checkWin(row, col, currentPlayer)) {
+      document.getElementById("status").innerHTML =
+              `<span class="winner">Người chơi ${currentPlayer} thắng!</span>`;
+      gameOver = true;
+      return;
+    }
+
+    currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    document.getElementById("status").textContent = `Lượt chơi: ${currentPlayer}`;
+  }
+
+  // Kiểm tra chiến thắng
+  function checkWin(row, col, player) {
+    return (
+            checkDirection(row, col, player, 1, 0) || // Kiểm tra hàng ngang
+            checkDirection(row, col, player, 0, 1) || // Kiểm tra hàng dọc
+            checkDirection(row, col, player, 1, 1) || // Kiểm tra đường chéo chính
+            checkDirection(row, col, player, 1, -1)   // Kiểm tra đường chéo phụ
+    );
+  }
+
+  function checkDirection(row, col, player, deltaRow, deltaCol) {
+    let count = 1;
+
+    let r = row + deltaRow;
+    let c = col + deltaCol;
+    while (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] === player) {
+      count++;
+      r += deltaRow;
+      c += deltaCol;
+    }
+
+    r = row - deltaRow;
+    c = col - deltaCol;
+    while (r >= 0 && r < boardSize && c >= 0 && c < boardSize && board[r][c] === player) {
+      count++;
+      r -= deltaRow;
+      c -= deltaCol;
+    }
+
+    return count >= 5;
+  }
+
+  createBoard();
+</script>
+</body>
+</html>
